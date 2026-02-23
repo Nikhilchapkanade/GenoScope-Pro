@@ -56,7 +56,20 @@ GenoScope Pro won the **“Spark of Innovation” 🏆** at the **BioSpark Hacka
 
 ## 📦 Installation
 
-### 1. Clone the repository
+### 1. Prerequisites (API Keys)
+To use the new Multi-Modal features (Image Analysis, PDF Parsing, Q&A, Fusion), you need a **Google API Key** for Gemini.
+You can get one from [Google AI Studio](https://aistudio.google.com/).
+
+Set it as an environment variable before running the app, or enter it directly in the app's sidebar UI.
+```bash
+# Windows (PowerShell)
+$env:GOOGLE_API_KEY="your-api-key-here"
+
+# Linux / Mac
+export GOOGLE_API_KEY="your-api-key-here"
+```
+
+### 2. Clone the repository
 ```bash
 git clone https://github.com/Sparshr04/GenoScope-Pro.git
 cd GenoScope-Pro/
@@ -97,8 +110,10 @@ genoscope-pro/
 │   └── flow.jpeg
 ├── config.py          # Configuration and constants
 ├── core
-│   ├── ai_engine.py.  # ESM2 Zero-shot Inference Logic
-│   └── data_client.py # Handles UniProt, AlphaFold, ClinVar APIs
+│   ├── ai_engine.py           # ESM2 Zero-shot Inference Logic
+│   ├── data_client.py         # Handles UniProt, AlphaFold, ClinVar APIs
+│   ├── multimodal_engine.py   # Gemini AI multi-modal integrations
+│   └── multimodal_data_client.py # Image / PDF parsers
 ├── dataset.py
 ├── examples
 │   └── mutations_list.txt
@@ -106,7 +121,8 @@ genoscope-pro/
 ├── pyproject.toml
 ├── README.md
 ├── ui
-│   └── visualizer.py  # 3D Py3Dmol Visualization
+│   ├── visualizer.py    # 3D Py3Dmol Visualization
+│   └── multimodal_ui.py # Streamlit UI for multi-modal tabs
 
 ```
 
