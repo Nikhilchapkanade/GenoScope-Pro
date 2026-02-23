@@ -1,8 +1,16 @@
 # app.py
+import os
 import streamlit as st
 from core.ai_engine import MutationPredictor
 from core.data_client import BioDataClient
 from ui.visualizer import render_3d_structure, plot_plddt_confidence
+from core.multimodal_engine import MultiModalEngine
+from ui.multimodal_ui import (
+    render_image_analysis_tab,
+    render_report_parser_tab,
+    render_genomic_chat_tab,
+    render_fusion_dashboard
+)
 
 st.set_page_config(page_title="GenoScope Pro", page_icon="🧬", layout="wide")
 
@@ -12,6 +20,15 @@ predictor = MutationPredictor()
 client = BioDataClient()
 
 # --- UI LAYOUT ---
+st.sidebar.title("⚙️ Configuration")
+api_key = st.sidebar.text_input("Google API Key", type="password", value=os.environ.get("GOOGLE_API_KEY", ""))
+
+if api_key:
+    mm_engine = MultiModalEngine(api_key=api_key)
+else:
+    mm_engine = None
+    st.sidebar.warning("Please enter a Google API Key for multi-modal features.")
+
 st.title("🧬 GenoScope Pro")
 st.markdown("Modular AI Mutation Analysis System")
 st.divider()
@@ -44,7 +61,10 @@ with col1:
                     st.error(str(e))
 
 # --- RESULTS TABS ---
-tab1, tab2, tab3 = st.tabs(["🔍 AI Analysis", "🧬 3D Structure", "🏥 Clinical Data"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+    "🔍 AI Analysis", "🧬 3D Structure", "🏥 Clinical Data",
+    "🖼️ Image Analysis", "📄 Report Parser", "💬 Genomic Q&A", "📊 Fusion"
+])
 
 with tab1:
     if 'result' in st.session_state:
@@ -79,6 +99,7 @@ with tab3:
                 st.caption("Try checking the gene name or mutation format.")
             else:
                 st.success("Record Found!")
+                st.session_state['clinical_data'] = clinical_data
                 col_a, col_b = st.columns(2)
                 with col_a:
                     st.metric("Clinical Significance", clinical_data.get("significance"))
@@ -87,3 +108,26 @@ with tab3:
                     st.write(clinical_data.get("conditions"))
                 st.caption(f"Source: {clinical_data.get('source')}")
 
+with tab4:
+    if mm_engine:
+        render_image_analysis_tab(mm_engine)
+    else:
+        st.warning("API Key required for image analysis.")
+
+with tab5:
+    if mm_engine:
+        render_report_parser_tab(mm_engine)
+    else:
+        st.warning("API Key required for report parsing.")
+
+with tab6:
+    if mm_engine:
+        render_genomic_chat_tab(mm_engine)
+    else:
+        st.warning("API Key required for conversational Q&A.")
+
+with tab7:
+    if mm_engine:
+        render_fusion_dashboard(mm_engine)
+    else:
+        st.warning("API Key required for fusion dashboard.")

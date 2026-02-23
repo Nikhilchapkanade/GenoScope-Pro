@@ -8,7 +8,9 @@ from config import MODEL_NAME, KNOWN_MUTATIONS
 
 class MutationPredictor:
     def __init__(self):
-        self.tokenizer, self.model = self._load_resources()
+        # Lazy initialization
+        self.tokenizer = None
+        self.model = None
 
     @staticmethod
     @st.cache_resource
@@ -20,6 +22,10 @@ class MutationPredictor:
 
     def compute_score(self, seq: str, mutation: str) -> float:
         """Computes the log-likelihood ratio (Delta score)."""
+        # Load resources lazily
+        if self.tokenizer is None or self.model is None:
+            self.tokenizer, self.model = self._load_resources()
+            
         # Regex parsing
         m = re.match(r"([A-Z])(\d+)([A-Z])", mutation.upper())
         if not m:

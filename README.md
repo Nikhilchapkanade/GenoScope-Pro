@@ -18,6 +18,12 @@ GenoScope Pro won the **“Spark of Innovation” 🏆** at the **BioSpark Hacka
 
 ## 🚀 Features
 
+### 🖼️ Multi-Modal System
+- **Image Analysis**: Upload medical/microscopy images for AI interpretation (Powered by Gemini Vision).
+- **Report Parsing**: Auto-extract genomic findings from PDF lab reports.
+- **Conversational Q&A**: Ask natural language questions about mutations and clinical impact.
+- **Fusion Dashboard**: Synthesize text, image, and tabular data into a unified risk assessment.
+
 ### 🤖 Zero-Shot AI Prediction
 - Powered by **Meta’s ESM2 (`esm2_t6_8M_UR50D`)** model.
 - Computes mutation pathogenicity using **evolutionary log-likelihood**.
@@ -37,14 +43,14 @@ GenoScope Pro won the **“Spark of Innovation” 🏆** at the **BioSpark Hacka
 
 ## 🛠️ Tech Stack
 
-| Component | Technology |
-|----------|------------|
-| **Frontend** | Streamlit |
-| **AI Engine** | PyTorch + Hugging Face Transformers |
-| **Model** | Meta AI ESM2 (`facebook/esm2_t6_8M_UR50D`) |
-| **Bioinformatics** | BioPython, Py3Dmol |
-| **APIs** | UniProt, AlphaFold DB, MyVariant.info |
-| **Language** | Python 3.13 |
+**Core Logic & Analytics**
+- **LLM/Vision**: Google Gemini 2.5 Flash (`google-generativeai`)
+- **Language Models:** Meta ESM2 (`transformers`, `torch`)
+- **Bioinformatics Libraries:** `biopython`, `PyPDF2`, `Pillow`
+- **Frontend / UI:** Streamlit (`streamlit`)
+- **3D Rendering:** `py3Dmol`, `stmol`
+- **Data Visualization:** `matplotlib`, `plotly`
+- **APIs:** AlphaFold DB API, UniProt API, MyVariant.info (ClinVar)
 
 ---
 
