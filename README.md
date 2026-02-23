@@ -4,7 +4,7 @@
 
 
 ### 💫 UI
-![App Demo](./assets/demo_new.webp)
+![App Demo](./assets/demo_new.gif)
 
 ### ⚡️ Flow
 <p align="center">
