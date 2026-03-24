@@ -4,11 +4,11 @@
 
 
 ### 💫 UI
-![App Demo](
+
 
 https://github.com/user-attachments/assets/94c3caa5-7a6b-453f-a138-ee84c93d9f73
 
-)
+
 
 ### ⚡️ Flow
 <p align="center">
