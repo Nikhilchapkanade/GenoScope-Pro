@@ -147,10 +147,68 @@ class BioDataClient:
                 print(f"Strategy {i} failed: {e}")
                 continue
 
-        # In core/data_client.py, inside fetch_clinical_data...
+        # No match found across all strategies
         return {
-            "significance": first_record.get("clinical_significance", "Unknown"),
-            "conditions": first_record.get("conditions", {}).get("name", "Not specified"),
+            "significance": "Not Found",
+            "conditions": "N/A",
             "source": "MyVariant.info (ClinVar)",
-            "debug_query": q 
+            "debug_query": "all strategies exhausted"
         }
+
+    def get_interaction_network(self, gene_name: str, species: int = 9606, limit: int = 20) -> list:
+        """Fetches protein-protein interaction network from STRING DB.
+        
+        Args:
+            gene_name: Gene symbol (e.g., 'TP53')
+            species: NCBI taxonomy ID (9606 = human)
+            limit: Max number of interaction partners
+            
+        Returns:
+            List of dicts with interaction data
+        """
+        url = "https://string-db.org/api/json/network"
+        params = {
+            "identifiers": gene_name,
+            "species": species,
+            "limit": limit,
+            "caller_identity": "GenoScope_Pro"
+        }
+        
+        try:
+            r = requests.get(url, params=params, headers=self.headers, timeout=15)
+            if r.status_code == 200:
+                data = r.json()
+                interactions = []
+                for item in data:
+                    interactions.append({
+                        "source": item.get("preferredName_A", item.get("stringId_A", "")),
+                        "target": item.get("preferredName_B", item.get("stringId_B", "")),
+                        "score": item.get("score", 0),
+                        "nscore": item.get("nscore", 0),
+                        "escore": item.get("escore", 0),
+                        "dscore": item.get("dscore", 0),
+                    })
+                return interactions
+        except Exception as e:
+            print(f"Error fetching STRING data: {e}")
+        
+        return []
+
+    def get_functional_partners(self, gene_name: str, species: int = 9606, limit: int = 10) -> list:
+        """Gets functional enrichment/partners summary from STRING."""
+        url = "https://string-db.org/api/json/interaction_partners"
+        params = {
+            "identifiers": gene_name,
+            "species": species,
+            "limit": limit,
+            "caller_identity": "GenoScope_Pro"
+        }
+        
+        try:
+            r = requests.get(url, params=params, headers=self.headers, timeout=15)
+            if r.status_code == 200:
+                return r.json()
+        except Exception as e:
+            print(f"Error fetching partners: {e}")
+        
+        return []

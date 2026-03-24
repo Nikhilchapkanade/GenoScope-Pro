@@ -59,6 +59,37 @@ class MutationPredictor:
             
         return float(math.log(mut_prob / wt_prob))
 
+    def batch_score(self, seq: str, mutations: list) -> dict:
+        """Scores multiple mutations and returns {mutation: delta_score}."""
+        results = {}
+        for mut in mutations:
+            mut = mut.strip().upper()
+            if not mut:
+                continue
+            try:
+                score = self.compute_score(seq, mut)
+                results[mut] = score
+            except (ValueError, Exception):
+                results[mut] = None
+        return results
+
+    def scan_position(self, seq: str, position: int) -> dict:
+        """Scans all 20 amino acid substitutions at a given position.
+        Returns {amino_acid: delta_score}."""
+        all_aa = "ACDEFGHIKLMNPQRSTVWY"
+        wt_aa = seq[position - 1]
+        results = {}
+        for aa in all_aa:
+            if aa == wt_aa:
+                continue
+            mut_str = f"{wt_aa}{position}{aa}"
+            try:
+                score = self.compute_score(seq, mut_str)
+                results[aa] = score
+            except (ValueError, Exception):
+                results[aa] = None
+        return results
+
     def analyze_impact(self, delta: float, mutation: str, gene: str) -> dict:
         """Combines AI score with Knowledge Base."""
         key = f"{gene}_{mutation.upper()}"
